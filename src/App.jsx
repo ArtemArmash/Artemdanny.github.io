@@ -9,14 +9,16 @@ export default function App() {
   const [messages, setMessages] = useState([])
 
   useEffect(() => {
-    const peer = new Peer();
+    const peer = new Peer(undefined, {
+      secure: true
+    })
     changeMyPeer(peer)
     peer.on("open", (id) => {
       changeMyPeerId(id)
     })
     peer.on("connection", (conn) => {
-      conn.on("data", (data)=>{
-        setMessages((prev)=>[...prev, {from: "them", text: data}])
+      conn.on("data", (data) => {
+        setMessages((prev) => [...prev, { from: "them", text: data }])
       })
     })
   }, [])
@@ -25,7 +27,7 @@ export default function App() {
     const conn = myPeer.connect(anotherPeerId)
     conn.on("open", () => {
       conn.send(myMessage)
-      setMessages((prev)=>[...prev, {from:"me", text:myMessage}])
+      setMessages((prev) => [...prev, { from: "me", text: myMessage }])
     })
   }
 
@@ -37,11 +39,11 @@ export default function App() {
       <div className="my-peer-id">
         <p>{myPeerId}</p>
         <div className="input-another-id">
-          <input type="text" placeholder="Enter another ID" 
-          value={anotherPeerId} onChange={(e)=>changeAnotherPeerId(e.target.value)}/>
+          <input type="text" placeholder="Enter another ID"
+            value={anotherPeerId} onChange={(e) => changeAnotherPeerId(e.target.value)} />
         </div>
         <div className="input-message">
-          <input type="text" placeholder="Enter message" value={myMessage} onChange={(e)=>changeMyMessage(e.target.value)} />
+          <input type="text" placeholder="Enter message" value={myMessage} onChange={(e) => changeMyMessage(e.target.value)} />
         </div>
         <button onClick={sendMessage}>Send message</button>
       </div>
